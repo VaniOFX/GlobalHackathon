@@ -11,6 +11,8 @@ dependencies:
   image_picker_modern:
   http:
   url_launcher:
+  image: ^2.1.4
+  path_provider:
 
 dev_dependencies:
   flutter_test:
