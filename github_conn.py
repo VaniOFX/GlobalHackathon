@@ -1,6 +1,5 @@
 import requests
 import json
-import spellchecker
 
 token = "407d5ce13b882270fcb7763569f7444b28a2f93d"
 gh_user = "VaniOFX"
