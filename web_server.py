@@ -48,21 +48,28 @@ async def get_text(request):
     
     if ("recognitionResults" in analysis):
         texts = [line["text"] for line in analysis["recognitionResults"][0]["lines"]]
+        digit_index = [i for i in range(len(texts)) if texts[i].isdigit()]
         print(texts)
 
-        card_id = texts[0].replace(" ", "")
-        print(card_id)
-
-        if (card_id.isdigit()):
-            note = " ".join(texts[1:])
-        else:
-            note = " ".join(texts)
+        if len(digit_index) == 0:
             card_id = 0
+            note = " ".join(texts)
+        else:
+            for i in range(len(digit_index)):
+                start_index = digit_index[i]
+                next_start_index = None if i == len(digit_index) - 1 else digit_index[i+1]
+
+                card_id = texts[start_index].replace(" ", "")
+                print(card_id)
+
+                if next_start_index is None:
+                    note = " ".join(texts[start_index+1:])
+                else:
+                    note = " ".join(texts[start_index+1:next_start_index])
 
         project_id = 2841426
         github_conn.update_card_by_id(project_id, card_id, note)
     return HTMLResponse(str(texts))
-
 
 if __name__ == '__main__':
     uvicorn.run(app=app, host='0.0.0.0', port=1997)
