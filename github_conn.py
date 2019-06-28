@@ -7,7 +7,7 @@ gh_repo = "GlobalHackathon"
 gh_project_id = 2841438
 gh_column_id = 5768952
 gh_card_id = 23293878
-default_location = "From AppName"
+default_location = "Others"
 accept = "application/vnd.github.inertia-preview+json"
 header = {
     "Accept":accept,
@@ -89,7 +89,10 @@ def edit_card_note(note, card_id):
 
     return response.json()
 
-def update_card_by_id(project_id, card_id, note):
+def update_card_by_id(project_id, card_id, note, column_name=None):
+    if column_name is None:
+        column_name = default_location
+    
     columns = get_columns(project_id)
     for column in columns:
         for card in get_cards_by_url(column["cards_url"]):
@@ -100,9 +103,9 @@ def update_card_by_id(project_id, card_id, note):
 
     # By default, put it in "To do"
     for column in columns:
-        if column["name"] == default_location:
+        if column["name"] == column_name:
             create_card(note, column["id"])
             return
     
-    column_id = create_column(default_location, project_id)
+    column_id = create_column(column_name, project_id)
     create_card(note, column_id)

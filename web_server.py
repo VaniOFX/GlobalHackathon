@@ -59,6 +59,7 @@ async def get_text(request):
                 
             github_conn.update_card_by_id(project_id, card_id, note)
         else:
+            column = texts[0] if not texts[0].isdigit() else None
             for i in range(len(digit_index)):
                 start_index = digit_index[i]
                 next_start_index = None if i == len(digit_index) - 1 else digit_index[i+1]
@@ -71,7 +72,7 @@ async def get_text(request):
                 else:
                     note = " ".join(texts[start_index+1:next_start_index])
                 
-                github_conn.update_card_by_id(project_id, card_id, note)
+                github_conn.update_card_by_id(project_id, card_id, note, column)
 
     return HTMLResponse(str(texts))
 
