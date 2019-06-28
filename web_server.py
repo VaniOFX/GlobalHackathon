@@ -49,11 +49,15 @@ async def get_text(request):
     if ("recognitionResults" in analysis):
         texts = [line["text"] for line in analysis["recognitionResults"][0]["lines"]]
         digit_index = [i for i in range(len(texts)) if texts[i].isdigit()]
+        project_id = 2841426
         print(texts)
+        print(digit_index)
 
         if len(digit_index) == 0:
             card_id = 0
             note = " ".join(texts)
+                
+            github_conn.update_card_by_id(project_id, card_id, note)
         else:
             for i in range(len(digit_index)):
                 start_index = digit_index[i]
@@ -66,9 +70,9 @@ async def get_text(request):
                     note = " ".join(texts[start_index+1:])
                 else:
                     note = " ".join(texts[start_index+1:next_start_index])
+                
+                github_conn.update_card_by_id(project_id, card_id, note)
 
-        project_id = 2841426
-        github_conn.update_card_by_id(project_id, card_id, note)
     return HTMLResponse(str(texts))
 
 if __name__ == '__main__':
